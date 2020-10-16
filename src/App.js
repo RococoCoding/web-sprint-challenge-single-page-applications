@@ -10,13 +10,13 @@ const App = () => {
       <nav>
         <h1>Pizza Pizza</h1>
         <Link to="/">Home</Link>
-        <Link to="/form">Form</Link>
+        <Link to="/pizza">Form</Link>
         <Link to="/success">Success</Link>
       </nav>
       <Route exact path="/">
         <Home />
       </Route>
-      <Route path="/form">
+      <Route path="/pizza">
         <Form />
       </Route>
       <Route path="/success">
