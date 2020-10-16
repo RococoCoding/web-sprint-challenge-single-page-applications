@@ -9,15 +9,18 @@ import "./App.css";
 const Header = styled.header`
   background-color: ${props => props.theme.red};
   display: flex;
-  padding: 2%;
-
 `
 const Title = styled.h1`
-  margin: auto 30%;
+  margin: auto 20%;
+  font-size: 4rem;
 `
 
 const Nav = styled.nav`
-  padding: 1% 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  padding: 1% 0 1% 1%;
+  line-height: 3rem;
 `
 
 const App = (props) => {
@@ -25,7 +28,7 @@ const App = (props) => {
     <Router>
       <Header>
         <Nav>
-          <NavLink className="navlink" to="/">Home | </NavLink>
+          <NavLink className="navlink" to="/">Home</NavLink>
           <NavLink className="navlink" to="/pizza">Order Pizza</NavLink>
         </Nav>
         <Title>Pizza Pizza</Title>
