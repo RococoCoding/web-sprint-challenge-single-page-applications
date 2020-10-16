@@ -11,7 +11,7 @@ const Header = styled.header`
   display: flex;
 `
 const Title = styled.h1`
-  margin: auto 20%;
+  margin: auto 23%;
   font-size: 4rem;
 `
 
