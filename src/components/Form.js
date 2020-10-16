@@ -74,6 +74,7 @@ export default function Form(props) {
   }
 
   function updateForm(e) {
+    console.log(e.target.name, e.target.value)
     if (e.target.name === "toppings") {
       setFormState({...formState}, formState[e.target.name].push(e.target.value))
     }
