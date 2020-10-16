@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import {BrowserRouter as Router, Route, NavLink} from "react-router-dom"
 import Home from "./components/Home";
 import Form from "./components/Form";
 import Success from "./components/Success";
 import styled from "styled-components";
 import "./App.css";
+
 
 const Header = styled.header`
   background-color: ${props => props.theme.red};
@@ -23,7 +24,23 @@ const Nav = styled.nav`
   line-height: 3rem;
 `
 
-const App = (props) => {
+const App = () => {
+  const [formState, setFormState] = useState({
+    name: "",
+    size: "",
+    toppings: [],
+    instructions: "",
+  });
+
+  function updateForm(e) {
+    if (e.target.name === "toppings") {
+      setFormState({...formState}, formState[e.target.name].push(e.target.value))
+    }
+    else {
+      setFormState({...formState, [e.target.name]: e.target.value})
+    }
+  }
+
   return (
     <Router>
       <Header>
@@ -37,10 +54,15 @@ const App = (props) => {
         <Home />
       </Route>
       <Route path="/pizza">
-        <Form />
+        <Form 
+          updateForm={updateForm}
+          formState={formState}
+        />
       </Route>
       <Route path="/success">
-        <Success />
+        <Success 
+          formState={formState}
+        />
       </Route>
     </Router>
   );

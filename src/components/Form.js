@@ -1,14 +1,21 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import {useHistory} from "react-router-dom";
 import axios from "axios";
 import * as yup from "yup"
-import {useHistory} from "react-router-dom";
+
+const PageContainer = styled.div`
+  height: 100vh;
+  background-size: cover;
+  background-image: url("/assets/ivan-torres-MQUqbmszGGM-unsplash.jpg");
+`
 
 const FormContainer = styled.form`
   font-size: 1.4rem;
   border-radius: 7px;
   width: 50%;
-  margin: 2% auto; 
+  margin: 0 auto; 
+  padding: 2%;
 `
 const Title = styled.h3`
   text-align: center;
@@ -17,14 +24,7 @@ const Title = styled.h3`
   border-radius:5px;
   margin: 0;
 `
-const Bg = styled.img`
-  position: fixed;
-  z-index: -1;
-  width: 100%;
-`
-const Wrapper = styled.div`
-  padding: 3%;
-`
+
 const InputContainer = styled.div`
   padding: 2%;
   font-weight: bold;
@@ -65,7 +65,7 @@ const Checkboxes = styled.div`
 `
 
 const Error = styled.p`
-  color: red;
+  color: white;
  ` 
 
 const Button = styled.button`
@@ -77,6 +77,7 @@ const Button = styled.button`
   border-radius: 5px;
 `
 
+
 const formSchema = yup.object().shape({
   name: yup 
     .string()
@@ -87,21 +88,19 @@ const formSchema = yup.object().shape({
 });
 
 export default function Form(props) {
-  const [formState, setFormState] = useState({
-    name: "",
-    size: "",
-    toppings: [],
-    instructions: "",
-  });
-
-  const [errorsState, setErrorsState] = useState({});
-  
   let history = useHistory();
+  const [errorsState, setErrorsState] = useState({});
+  const {updateForm, formState} = props;
 
-  function submit(e) {
+  function submit(e) {  
     e.preventDefault();
     formSchema.validate(formState, {abortEarly: false})
-      .then(value=>setErrorsState({}))
+      .then(value=> {
+        setErrorsState({});
+        axios.post("https://reqres.in/api/users", formState) //submit form data to url
+        .then(res => history.push("/success"))
+        .catch(err => console.log(err));
+      })
       .catch(err=> {
         let errors = err.inner;
         let errorsObj = {};
@@ -111,28 +110,10 @@ export default function Form(props) {
         }
         setErrorsState(errorsObj);
     });
-    formSchema.isValid(formState)
-      .then(valid=> {
-        axios.post("https://reqres.in/api/users", formState) //submit form data to url
-        .then(res => history.push("/success"))
-        .catch(err => console.log(err));
-    })
-  }
-
-  function updateForm(e) {
-    console.log(e.target.name, e.target.value)
-    if (e.target.name === "toppings") {
-      setFormState({...formState}, formState[e.target.name].push(e.target.value))
-    }
-    else {
-      setFormState({...formState, [e.target.name]: e.target.value})
-    }
   }
 
   return (
-    <div className="form-page-container">
-      <Bg src="assets/ivan-torres-MQUqbmszGGM-unsplash.jpg"></Bg>
-      <Wrapper>
+    <PageContainer>
         <FormContainer onSubmit={submit}>
           <Title>Build Your Own Pizza</Title>
           <InputContainerRed>
@@ -143,7 +124,7 @@ export default function Form(props) {
               placeholder="Mr. Peps"
               onChange={updateForm}
             />
-            {errorsState.name && <Error>{errorsState.name}</Error>}
+            {errorsState.name && <Error>Error: {errorsState.name}</Error>}
           </InputContainerRed>
 
 
@@ -160,7 +141,7 @@ export default function Form(props) {
               <option value="large">Large</option>
               <option value="xl">XL</option>
             </Select>
-            {errorsState.size && <Error>{errorsState.size}</Error>}
+            {errorsState.size && <Error>Error: {errorsState.size}</Error>}
           </InputContainer>
 
 
@@ -216,7 +197,6 @@ export default function Form(props) {
                 />jalapenos
               </Label>
             </Checkboxes>
-            {errorsState.toppings && <Error>{errorsState.toppings}</Error>}
           </InputContainerRed>
       
 
@@ -228,12 +208,10 @@ export default function Form(props) {
               placeholder="Please whisper sweet nothings to my pizza."
               onChange={updateForm}
             />
-            {errorsState.instructions && <Error>{errorsState.instructions}</Error>}
           </InputContainer>
 
           <Button type="submit">Place Your Order</Button>
         </FormContainer>
-      </Wrapper>
-    </div>
+    </PageContainer>
   )
 }
